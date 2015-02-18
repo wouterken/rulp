@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require_relative '../lib/rulp'
+begin
+  load Gem.bin_path('pry', 'pry', ">= 0.9")
+rescue
+  require 'irb'
+  ARGV.clear # otherwise all script parameters get passed to IRB
+  IRB.start
+end

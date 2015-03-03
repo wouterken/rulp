@@ -1,10 +1,10 @@
 class Cbc < Solver
   def solve(open_solution=false)
-    `#{executable} #{@filename} branch solution #{@outfile}`
+    system("#{executable} #{@filename} branch solution #{@outfile}")
     `open #{@outfile}` if open_solution
   end
 
-  def executable
+  def self.executable
     :cbc
   end
 

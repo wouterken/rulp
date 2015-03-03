@@ -1,10 +1,10 @@
 class Glpk < Solver
   def solve(open_solution=false)
-    `#{executable} --lp #{@filename} --write #{@outfile}`
+    system("#{executable} --lp #{@filename} --write #{@outfile}")
     `open #{@outfile}` if open_solution
   end
 
-  def executable
+  def self.executable
     :glpsol
   end
 

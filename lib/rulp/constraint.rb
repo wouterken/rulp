@@ -12,6 +12,19 @@ class Constraint
   end
 
   def to_s
-    return "#{@expressions} #{@constraint_op == :== ? "=" : @constraint_op} #{@value}"
+    return "#{@expressions} #{constraint_op} #{@value}"
+  end
+
+  def constraint_op
+    case "#{@constraint_op}"
+    when "=="
+      "="
+    when "<"
+      "<="
+    when ">"
+      ">="
+    else
+      @constraint_op
+    end
   end
 end

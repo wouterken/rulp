@@ -49,7 +49,7 @@ module Rulp
       return self, something
     end
 
-    def bounds_str
+    def bounds
       return nil if !(self.gt || self.lt || self.const)
       return "#{self.name} = #{self.const}" if self.const
 

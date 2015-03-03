@@ -13,12 +13,13 @@ items       = 50.times.map(&Shop_Item_b)
 items_count = items.sum
 items_costs = items.map{|item| item * Random.rand(1.0...5.0)}.sum
 
-cost = Rulp::Cbc Rulp::Min( items_costs ) [
+Rulp::Min( items_costs ) [
   items_count  >= 10,
   items_costs  >= 15
-]
+].scip
 
 
+cost = items_costs.evaluate
 ##
 # 'cost' is the result of the objective function.
 # You can retrieve allocations by querying the variables.

@@ -11,7 +11,7 @@ require_relative 'test_helper'
 #   x >= 0, y >= 0, z >= 0
 #
 
-class SimpleTest < Minitest::Test
+class SaveToFile < Minitest::Test
   def setup
     given[ X_i >= 0,  Y_i >= 0,  Z_i >= 0 ]
     @objective = 10 * X_i + 6 * Y_i + 4 * Z_i
@@ -22,14 +22,10 @@ class SimpleTest < Minitest::Test
     ]
   end
 
-  def test_simple
-    each_solver do |solver|
-      setup
-      @problem.send(solver)
-      assert_equal X_i.value, 33
-      assert_equal Y_i.value, 67
-      assert_equal Z_i.value, 0
-      assert_equal @objective.evaluate , 732
-    end
+  def test_save
+    sample_output_filename = @problem.get_output_filename
+    @problem.save(sample_output_filename)
+    assert_equal(IO.read(sample_output_filename), "#{@problem}")
+    assert_operator "#{@problem}".length, :>=, 100
   end
 end

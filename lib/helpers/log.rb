@@ -26,7 +26,7 @@ module Rulp
     }
 
     def self.level=(value)
-      raise Exception.new("#{value} is not a valid log level") unless LEVELS[value]
+      raise StandardError.new("#{value} is not a valid log level") unless LEVELS[value]
       @@level = value
     end
 

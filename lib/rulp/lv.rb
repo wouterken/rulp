@@ -13,8 +13,8 @@ class LV
     ->(index){ send(self.meth(index)) }
   end
 
-  def meth(index)
-    "#{self.name}#{index}_#{self.suffix}"
+  def meth(*args)
+    "#{self.name}#{args.join("_")}_#{self.suffix}"
   end
 
   def suffix
@@ -31,7 +31,15 @@ class LV
 
   def self.definition(name)
     self.class.send(:define_method, name){
-      LV::names_table["#{name}#{self}"] if LV::names_table["#{name}#{self}"].class == self
+      defined = LV::names_table["#{name}"]
+      if defined && defined.class != self
+        raise StandardError.new("ERROR:\n#{name} was already defined as a variable of type #{defined.class}."+
+                                "You are trying to redefine it as a variable of type #{self}")
+      elsif(!defined)
+        self.new(name)
+      else
+        defined
+      end
     }
     return self.send(name) || self.new(name)
   end
@@ -54,11 +62,18 @@ class LV
   end
 
   def value
+    return nil unless @value
     if self.class == BV
       return @value.round(2) == 1
+    elsif self.class == IV
+      return @value
     else
       @value
     end
+  end
+
+  def inspect
+    "#{name}(#{suffix})[#{value || 'undefined'}]"
   end
 end
 

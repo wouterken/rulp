@@ -49,7 +49,7 @@ Rulp is inspired by the ruby wrapper for the GLPK toolkit and the python LP libr
 
 	]
 
-	result = Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
+	result = Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
 	                X_i +     Y_i +     Z_i <= 100,
 	           10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
 	           2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
@@ -140,7 +140,7 @@ Inter-variable constraints should be expressed as problem constrants. (Explained
 Constraints are added to a problem using the :[] syntax.
 
 ```ruby
-	problem = Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i )
+	problem = Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i )
 
 	problem[
 		X_i +     Y_i +     Z_i <= 100
@@ -156,7 +156,7 @@ Constraints are added to a problem using the :[] syntax.
 You can add multiple constraints at once by comma separating them as seen in the earlier examples:
 
 ```ruby
-	Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
+	Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
 		                X_i +     Y_i +     Z_i <= 100,
 		           10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
 		           2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
@@ -174,7 +174,7 @@ such that the command `which [exec_name]` returns a path. (I.e they must be on y
 Given a problem there are multiple ways to initiate a solver.
 
 ```ruby
-	@problem = Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
+	@problem = Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
 	                 X_i +     Y_i +     Z_i <= 100,
 	           	10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
 	           	2 *  X_i + 2 * Y_i + 6 * Z_i <= 300

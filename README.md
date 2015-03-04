@@ -136,6 +136,7 @@ You can add multiple constraints at once by comma separating them as seen in the
 		                X_i +     Y_i +     Z_i <= 100,
 		           10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
 		           2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
+		          ]
 
 ### Solving or saving 'lp' files
 
@@ -188,6 +189,21 @@ The optional booleans will optionally call the 'open' utility to open the proble
 
 	@problem.solve_with(SCIP, true, true)
 
+#### Saving LP files.
+
+You may not wish to use one of the RULP compatible but another solver that is able to read .lp files. (E.g CPLEX of Gurobi) but still want to use Rulp to generate your LP file. In this case you should use Rulp to output your lp problem description to a file of your choice. To do this simply use the following call
+
+	@problem.save("/Users/johndoe/Desktop/myproblem.lp")
+
+OR
+
+	@problem.output("/Users/johndoe/Desktop/myproblem.lp")
+
+You should also be able to call
+
+	@problem.save
+
+Without parameters to be prompted for a save location.
 
 ### Examples.
 Take a look at some basic examples in the ./examples directory in the source code.

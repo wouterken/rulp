@@ -35,7 +35,7 @@ Rulp is inspired by the ruby wrapper for the GLPK toolkit and the python LP libr
 	                X_i +     Y_i +     Z_i <= 100,
 	           10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
 	           2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
-	]
+	].solve
 
 	##
 	# 'result' is the result of the objective function.
@@ -114,3 +114,142 @@ Inter-variable constraints should be expressed as problem constrants. (Explained
 	Y_f.bounds
 	=> "y = 10"
 
+### Problem constraints
+
+Constraints are added to a problem using the :[] syntax.
+
+	problem = Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i )
+
+	problem[
+		X_i +     Y_i +     Z_i <= 100
+	]
+
+	problem[
+		10 * X_i + 4 * Y_i + 5 * Z_i <= 600
+	]
+	...
+	problem.solve
+
+You can add multiple constraints at once by comma separating them as seen in the earlier examples:
+
+	Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
+		                X_i +     Y_i +     Z_i <= 100,
+		           10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
+		           2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
+
+### Solving or saving 'lp' files
+
+There are multiple ways to solve the problem or output the problem to an 'lp' file.
+Currently the RULP library supports calling installed executables for Scip, Cbc and glpk.
+For each of these solvers it requires the following executables to be installed respectively
+such that the command `which [exec_name]` returns a path. (I.e they must be on your PATH).
+(scip, cbc, glpsol)
+
+Given a problem there are multiple ways to initiate a solver.
+
+	@problem = Rulp::Cbc Rulp::Max( 10 * X_i + 6 * Y_i + 4 * Z_i ) [
+	                 X_i +     Y_i +     Z_i <= 100,
+	           	10 * X_i + 4 * Y_i + 5 * Z_i <= 600,
+	           	2 *  X_i + 2 * Y_i + 6 * Z_i <= 300
+						]
+
+Default solver:
+
+	@problem.solve
+	# this will use the solver specified in the environment variable 'SOLVER' by default.
+	# This can be 'scip', 'cbc', or 'glpk'. If no variable is given it uses scip as a default.
+
+If you had a linear equation in a file named 'problem.rb' from the command line you could specify an alternate solver by executing:
+
+	SOLVER=cbc ruby problem.rb
+
+Explicit solver:
+
+	@problem.scip
+	# 	Or
+	@problem.cbc
+	#   Or
+	@problem.glpk
+
+Or
+
+	Rulp::Scip(@problem)
+	Rulp::Glpk(@problem)
+	Rulp::Cbc(@problem)
+
+
+For debugging purposes you may wish to see the input and output files generated and consumed by Rulp.
+To do this you can use the following extended syntax:
+
+	def solve_with(type, open_definition=false, open_solution=false)...
+
+The optional booleans will optionally call the 'open' utility to open the problem definition or the solution. (This utility is installed by default on a mac and will not work if the utility is not on your PATH)
+
+
+	@problem.solve_with(SCIP, true, true)
+
+
+### Examples.
+Take a look at some basic examples in the ./examples directory in the source code.
+
+### Rulp Executable
+Rulp comes bundled with a 'rulp' executable which by default loads the rulp environment and either the PRY or IRB REPL.
+(Preference for PRY). Once installed you should be able to simply execute 'rulp' to launch this rulp enabled REPL.
+You can then play with and attempt LP and MIP problems straight from the command line.
+
+	[1] pry(main)> 13 <= X_i <= 45 # Declare integer variable
+	=> X(i)[undefined]
+
+	[2] pry(main)> -15 <= Y_f <= 15 # Declare float variable
+	=> Y(f)[undefined]
+
+	[3] pry(main)> @problem = Rulp::Min(X_i - Y_f) # Create min problem
+	[info] Creating minimization problem
+	=>
+	Minimize
+	 obj: X -Y
+	Subject to
+	0 X = 0
+	Bounds
+	 13 <= X <= 45
+	 -15 <= Y <= 15
+	General
+	 X
+	End
+
+	[4] @problem[ X_i - 2 * Y_f < 40] #Adding a problem constraint
+	=>
+	Minimize
+	 obj: X -Y
+	Subject to
+	  c0: X -2 Y <= 40
+	Bounds
+	 13 <= X <= 45
+	 -15 <= Y <= 15
+	General
+	 X
+	End
+
+
+	[5] pry(main)> @problem.solve # Solve
+	...
+	[info] Solver took 0.12337
+	[info] Parsing result
+	=> -2.0 #(Minimal result)
+
+	[6] pry(main)> Y_f # See value calculated for Y now that solver has run
+	=> Y(f)[15.0]
+
+	[8] pry(main)> X_i
+	=> X(i)[13.0]
+
+	# The result of the objective function (-2.0) was returned by the call to .solve
+	# Now the solver has run and calculated values for our variables we can also test the
+	# objective function (or any function) by calling evaluate on it.
+	# E.g
+
+	[9] (X_i - Y_f).evaluate
+	=> -2.0
+
+	[10] pry(main)> (2 * X_i + 15 * Y_f).evaluate
+	=> 251.0

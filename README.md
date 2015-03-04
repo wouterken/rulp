@@ -286,3 +286,30 @@ You can then play with and attempt LP and MIP problems straight from the command
 
 	[10] pry(main)> (2 * X_i + 15 * Y_f).evaluate
 	=> 251.0
+
+
+### A larger example
+Here is a basic example of how Rulp can help you model problems with a large number of variables.
+Suppose we are playing an IOS app which contains in-app purchases. Each of these in-app purchases costs
+a variable amount and gives us a certain number of in-game points. Suppose our mother gave us $55 to spend.
+We want to find the maximal number of in-game points we can buy using this money. Here is a simple example
+of how we could use Rulp to formulate this problem.
+
+We decide to model each of these possible purchases as a binary variable (as we either purchase them or
+we don't. We can't partially purchase one.)
+
+	# Generate the data randomly for this example.
+	costs, points = [*0..1000].map do |i|
+		[Purchase_b(i) * Random.rand(1.0..3.0), Purchase_b(i) * Random.rand(5.0..10.0)]
+	end.transpose.map(&:sum) #We sum the array of points and array of costs to create a Rulp expression
+
+	# And this is where the magic happens!. We ask rulp to maximise the number of points given
+	# the constraint that costs must be less than $55
+
+	Rulp::Max(points)[
+		costs < 55
+	].solve
+	=> 538.2125623353652 (# You will get a different value as data was generated randomly)
+
+	# Now how do we check which purchases were selected?
+	selected_purchases = [*0..1000].select{|i| Purchase_b(i).value }

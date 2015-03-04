@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Rulp](#rulp)
+  - [Sample Code](#sample-code)
+  - [Usage](#usage)
+      - [Variables](#variables)
+    - [Variable Constraints](#variable-constraints)
+    - [Problem constraints](#problem-constraints)
+    - [Solving or saving 'lp' files](#solving-or-saving-lp-files)
+      - [Saving LP files.](#saving-lp-files)
+    - [Examples.](#examples)
+    - [Rulp Executable](#rulp-executable)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Rulp
 
 Rulp is an easy to use Ruby DSL for generating linear programming and mixed integer programming problem descriptions in the LP file format.
@@ -191,7 +208,7 @@ The optional booleans will optionally call the 'open' utility to open the proble
 
 #### Saving LP files.
 
-You may not wish to use one of the RULP compatible but another solver that is able to read .lp files. (E.g CPLEX of Gurobi) but still want to use Rulp to generate your LP file. In this case you should use Rulp to output your lp problem description to a file of your choice. To do this simply use the following call
+You may not wish to use one of the RULP compatible but another solver that is able to read .lp files. (E.g CPLEX or Gurobi) but still want to use Rulp to generate your LP file. In this case you should use Rulp to output your lp problem description to a file of your choice. To do this simply use the following call
 
 	@problem.save("/Users/johndoe/Desktop/myproblem.lp")
 

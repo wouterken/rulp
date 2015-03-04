@@ -4,17 +4,17 @@
 # These are constructed dynamically by using the special Capitalised variable declaration syntax.
 ##
 class LV
-  attr_reader :name
+  attr_reader :name, :args
   attr_accessor :lt, :lte, :gt, :gte, :value
   include Rulp::Bounds
   include Rulp::Initializers
 
   def to_proc
-    ->(index){ send(self.meth(index)) }
+    ->(index){ send(self.meth, index) }
   end
 
-  def meth(*args)
-    "#{self.name}#{args.join("_")}_#{self.suffix}"
+  def meth
+    "#{self.name}_#{self.suffix}"
   end
 
   def suffix
@@ -22,26 +22,31 @@ class LV
   end
 
   def self.method_missing(name, *args)
-    return self.definition( "#{name}#{args.join("_")}" )
+    return self.definition(name, args)
   end
 
   def self.const_missing(name)
     return self.definition(name)
   end
 
-  def self.definition(name)
-    self.class.send(:define_method, name){
-      defined = LV::names_table["#{name}"]
-      if defined && defined.class != self
-        raise StandardError.new("ERROR:\n#{name} was already defined as a variable of type #{defined.class}."+
-                                "You are trying to redefine it as a variable of type #{self}")
-      elsif(!defined)
-        self.new(name)
+  def self.definition(name, args)
+    identifier = "#{name}#{args.join("_")}"
+    self.class.send(:define_method, identifier){|index=nil|
+      if index
+        self.definition(name, index)
       else
-        defined
+        defined = LV::names_table["#{identifier}"]
+        if defined && defined.class != self
+          raise StandardError.new("ERROR:\n#{name} was already defined as a variable of type #{defined.class}."+
+                                  "You are trying to redefine it as a variable of type #{self}")
+        elsif(!defined)
+          self.new(name, args)
+        else
+          defined
+        end
       end
     }
-    return self.send(name) || self.new(name)
+    return self.send(identifier) || self.new(name, args)
   end
 
   def * (numeric)
@@ -73,7 +78,7 @@ class LV
   end
 
   def inspect
-    "#{name}(#{suffix})[#{value || 'undefined'}]"
+    "#{name}#{args.join("-")}(#{suffix})[#{value || 'undefined'}]"
   end
 end
 

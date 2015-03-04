@@ -22,14 +22,14 @@ module Kernel
     if (start <= "Z" && start >= "A")
       case method_name[-1]
       when "b"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)] + args.join("_")
-        return BV.send(method_name)
+        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+        return BV.send(method_name, args)
       when "i"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)] + args.join("_")
-        return IV.send(method_name)
+        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+        return IV.send(method_name, args)
       when "f"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)] + args.join("_")
-        return LV.send(method_name)
+        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+        return LV.send(method_name, args)
       end
     end
     old_method_missing(value, *args)

@@ -1,9 +1,10 @@
 module Rulp
   module Initializers
-    def initialize(name)
-      raise StandardError.new("Variable with the name #{name} of a different type (#{LV::names_table[name].class}) already exists") if LV::names_table["#{name}"]
-      LV::names_table["#{name}"] = self
+    def initialize(name, args)
       @name = name
+      @args = args
+      raise StandardError.new("Variable with the name #{self} of a different type (#{LV::names_table[self.to_s].class}) already exists") if LV::names_table[self.to_s]
+      LV::names_table[self.to_s] = self
     end
 
     def self.included(base)
@@ -21,7 +22,7 @@ module Rulp
     end
 
     def to_s
-      "#{self.name}"
+      "#{self.name}#{self.args.join("_")}"
     end
   end
 end

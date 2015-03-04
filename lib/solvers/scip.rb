@@ -23,7 +23,7 @@ class Scip < Solver
       vars_by_name[cols[0].to_s] = cols[1].to_f
     end
     variables.each do |var|
-      var.value = vars_by_name[var.name.to_s].to_f
+      var.value = vars_by_name[var.to_s].to_f
     end
 
     return objective

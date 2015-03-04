@@ -17,7 +17,7 @@ class Cbc < Solver
       vars_by_name[cols[1].to_s] = cols[2].to_f
     end
     variables.each do |var|
-      var.value = vars_by_name[var.name.to_s].to_f
+      var.value = vars_by_name[var.to_s].to_f
     end
     return objective
   end

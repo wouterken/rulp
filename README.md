@@ -1,3 +1,6 @@
+[![Rulp](https://img.shields.io/badge/Rulp-Ruby%20Linear%20Programming-blue.svg)](Rulp)
+[![Gem Version](https://badge.fury.io/rb/rulp.svg)](http://badge.fury.io/rb/rulp)  [![Downloads](https://img.shields.io/gem/dt/rulp/stable.svg)](https://img.shields.io/gem/dt/rulp)  [![Codeship Status for wouterken/rulp](https://codeship.com/projects/f97c2f00-a4d2-0132-7283-026d769eacf9/status?branch=master)](https://codeship.com/projects/66508)
+
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -20,6 +23,7 @@
     - [A larger example](#a-larger-example)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 # Rulp
 Rulp is an easy to use Ruby DSL for generating linear programming and mixed integer programming problem descriptions in the LP file format.
@@ -143,7 +147,9 @@ Download the latest version of GLPK from http://www.gnu.org/software/glpk/#downl
 
 From the download directory
 
-	tar -xzf glpk-4.43.tar.gz ./configure —prefix=/usr/local
+	tar -xzf glpk-4.55.tar.gz
+	cd glpk-4.55
+	 ./configure --prefix=/usr/local
 	make
 	sudo make install
 

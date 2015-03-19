@@ -13,14 +13,14 @@
 class << Object
   alias_method :old_const_missing, :const_missing
   def const_missing(value)
-    method_name = "#{value}" rescue ""
+    method_name = "#{value}".split("::")[-1] rescue ""
     if (("A".."Z").include?(method_name[0]))
       if(method_name.end_with?("b"))
-        BV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
+        return BV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
       elsif(method_name.end_with?("i"))
-        IV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
+        return IV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
       elsif(method_name.end_with?("f"))
-        LV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
+        return LV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
       end
     end
     old_const_missing(value)

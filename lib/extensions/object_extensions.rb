@@ -11,6 +11,7 @@
 # Is_happy_b is the equivalent of Is_happy (type binary/boolean)
 ##
 class << Object
+  alias_method :old_const_missing, :const_missing
   def const_missing(value)
     method_name = "#{value}" rescue ""
     if (("A".."Z").include?(method_name[0]))
@@ -22,5 +23,6 @@ class << Object
         LV.send(method_name[0..(method_name[-2] == "_" ? -3 : -2)])
       end
     end
+    old_const_missing(value)
   end
 end

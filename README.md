@@ -1,5 +1,8 @@
 [![Rulp](https://img.shields.io/badge/Rulp-Ruby%20Linear%20Programming-blue.svg)](Rulp)
-[![Gem Version](https://badge.fury.io/rb/rulp.svg)](http://badge.fury.io/rb/rulp)  [![Downloads](https://img.shields.io/gem/dt/rulp/stable.svg)](https://img.shields.io/gem/dt/rulp)  [![Codeship Status for wouterken/rulp](https://codeship.com/projects/f97c2f00-a4d2-0132-7283-026d769eacf9/status?branch=master)](https://codeship.com/projects/66508)
+[![Gem Version](https://badge.fury.io/rb/rulp.svg)](http://badge.fury.io/rb/rulp)
+[![Downloads](https://img.shields.io/gem/dt/rulp/stable.svg)](https://img.shields.io/gem/dt/rulp)
+[![Inline docs](http://inch-ci.org/github/wouterken/rulp.svg?branch=master)](http://inch-ci.org/github/wouterken/rulp)
+[![Codeship Status for wouterken/rulp](https://codeship.com/projects/f97c2f00-a4d2-0132-7283-026d769eacf9/status?branch=master)](https://codeship.com/projects/66508)
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->

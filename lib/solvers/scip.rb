@@ -5,7 +5,7 @@ class Scip < Solver
   end
 
   def solve(open_solution=false)
-    system("rm #{@outfile}; #{executable} -f #{@filename} -l #{@outfile}")
+    system("rm #{@outfile}; #{executable} -f #{@filename} -l #{@outfile} -s ./scip.set")
     `open #{@outfile}` if open_solution
   end
 

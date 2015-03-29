@@ -13,6 +13,8 @@ require 'set'
 GLPK  = "glpsol"
 SCIP  = "scip"
 CBC   = "cbc"
+PSCIP = "pscip"
+PCBC  = "pcbc"
 
 module Rulp
   attr_accessor :expressions
@@ -22,11 +24,15 @@ module Rulp
   GLPK  = ::GLPK
   SCIP  = ::SCIP
   CBC   = ::CBC
+  PSCIP = ::PSCIP
+  PCBC  = ::PCBC
 
   SOLVERS = {
-    GLPK => Glpk,
-    SCIP => Scip,
-    CBC  => Cbc
+    GLPK  => Glpk,
+    SCIP  => Scip,
+    PSCIP => PScip,
+    PCBC  => PCbc,
+    CBC   => Cbc
   }
 
   def self.Glpk(lp)
@@ -39,6 +45,14 @@ module Rulp
 
   def self.Scip(lp)
     lp.solve_with(SCIP) rescue nil
+  end
+
+  def self.Pcbc(lp)
+    lp.solve_with(PCBC) rescue nil
+  end
+
+  def self.Pscip(lp)
+    lp.solve_with(PSCIP) rescue nil
   end
 
   def self.Max(objective_expression)

@@ -36,7 +36,24 @@ module Rulp
 
     def self.log(level, message)
       if(LEVELS[level].to_i <= LEVELS[self.level])
-        puts("[#{level}] #{message}")
+        puts("[#{colorize(level)}] #{message}")
+      end
+    end
+
+    def self.colorize(level)
+      if defined?(Pry) && Pry.color
+        case level.to_sym
+        when :debug
+          Pry::Helpers::Text.cyan(level)
+        when :info
+          Pry::Helpers::Text.green(level)
+        when :warn
+          Pry::Helpers::Text.magenta(level)
+        when :error
+          Pry::Helpers::Text.red(level)
+        end
+      else
+        level
       end
     end
 

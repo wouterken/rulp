@@ -26,3 +26,5 @@ end
 require_relative 'cbc'
 require_relative 'scip'
 require_relative 'glpk'
+require_relative 'pscip'
+require_relative 'pcbc'

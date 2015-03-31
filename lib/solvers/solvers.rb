@@ -1,9 +1,13 @@
 class Solver
   def initialize(filename)
     @filename = filename
-    @outfile = "/tmp/#{executable}-output.txt"
+    @outfile = get_output_filename
     raise StandardError.new("Couldn't find solver #{executable}!") if `which #{executable}`.length == 0
     @solver_exists = true
+  end
+
+  def get_output_filename
+    "/tmp/rulp-#{Random.rand(0..1000)}.sol"
   end
 
   def store_results(variables)

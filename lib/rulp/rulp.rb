@@ -151,7 +151,7 @@ module Rulp
       "Solving problem".log(:info)
       _, time = _profile{ solver.solve(open_solution) }
 
-      "Solver took #{time}".log(:info)
+      "Solver took #{time}".log(:debug)
 
       "Parsing result".log(:info)
       solver.store_results(@variables)

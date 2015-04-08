@@ -1,12 +1,10 @@
 class Scip < Solver
-
   def self.executable
     :scip
   end
 
-  def solve(open_solution=false)
+  def solve(options)
     system("rm #{@outfile}; #{executable} -f #{@filename} -l #{@outfile} -s ./scip.set")
-    `open #{@outfile}` if open_solution
   end
 
   def store_results(variables)

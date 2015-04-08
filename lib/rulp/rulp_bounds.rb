@@ -56,7 +56,7 @@ module Rulp
       [
         self.gt,
         self.gt ? "<=" : nil,
-        self.name,
+        self.to_s,
         self.lt ? "<=" : nil,
         self.lt
       ].compact.join(" ")

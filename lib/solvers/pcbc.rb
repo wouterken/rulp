@@ -1,7 +1,8 @@
 class PCbc < Solver
-  def solve(open_solution=false)
-    system("#{executable} #{@filename} threads 8 branch solution #{@outfile}")
-    `open #{@outfile}` if open_solution
+  def solve(options)
+    command =  "#{executable} #{@filename} %s threads 8 branch solution #{@outfile}"
+    command %= options[:gap] ? "ratio #{options[:gap]}":""
+    system(command)
   end
 
   def self.executable

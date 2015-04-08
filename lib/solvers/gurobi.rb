@@ -1,9 +1,8 @@
-class Cbc < Solver
+class Gurobi < Solver
   def solve(options)
-    command =  "#{executable} #{@filename} %s branch solution #{@outfile}"
-    command %= options[:gap] ? "ratio #{options[:gap]}":""
+    command = "gurobi_cl ResultFile=#{@outfile} #{@filename}"
+    command %= options[:gap] ? "MipGap=#{options[:gap]}":""
     system(command)
-    `open #{@outfile}` if options[:open_solution]
   end
 
   def self.executable
@@ -16,7 +15,7 @@ class Cbc < Solver
     vars_by_name = {}
     rows[1..-1].each do |row|
       cols = row.strip.split(/\s+/)
-      vars_by_name[cols[1].to_s] = cols[2].to_f
+      vars_by_name[cols[0].to_s] = cols[1].to_f
     end
     variables.each do |var|
       var.value = vars_by_name[var.to_s].to_f

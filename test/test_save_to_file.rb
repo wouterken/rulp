@@ -13,6 +13,7 @@ require_relative 'test_helper'
 
 class SaveToFile < Minitest::Test
   def setup
+    LV::clear
     given[ X_i >= 0,  Y_i >= 0,  Z_i >= 0 ]
     @objective = 10 * X_i + 6 * Y_i + 4 * Z_i
     @problem   = Rulp::Max( @objective ) [

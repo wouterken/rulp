@@ -1,7 +1,8 @@
 class Glpk < Solver
-  def solve(open_solution=false)
-    system("#{executable} --lp #{@filename} --write #{@outfile}")
-    `open #{@outfile}` if open_solution
+  def solve(options)
+    command = "#{executable} --lp #{@filename} %s --cuts --write #{@outfile}"
+    command %= options[:gap] ? "--mipgap #{options[:gap]}" : ""
+    system(command)
   end
 
   def self.executable

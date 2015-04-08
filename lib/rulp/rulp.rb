@@ -15,6 +15,7 @@ SCIP  = "scip"
 CBC   = "cbc"
 PSCIP = "pscip"
 PCBC  = "pcbc"
+GUROBI = "gurobi_cl"
 
 module Rulp
   attr_accessor :expressions
@@ -22,37 +23,47 @@ module Rulp
   MAX = "Maximize"
 
   GLPK  = ::GLPK
+  GUROBI  = ::GUROBI
   SCIP  = ::SCIP
   CBC   = ::CBC
   PSCIP = ::PSCIP
   PCBC  = ::PCBC
 
   SOLVERS = {
-    GLPK  => Glpk,
-    SCIP  => Scip,
-    PSCIP => PScip,
-    PCBC  => PCbc,
-    CBC   => Cbc
+    GLPK     => Glpk,
+    SCIP     => Scip,
+    PSCIP    => PScip,
+    PCBC     => PCbc,
+    CBC      => Cbc,
+    GUROBI   => Gurobi,
   }
 
-  def self.Glpk(lp)
-    lp.solve_with(GLPK) rescue nil
+  def self.Glpk(lp, opts={})
+    lp.solve_with(GLPK, opts) rescue nil
   end
 
-  def self.Cbc(lp)
-    lp.solve_with(CBC) rescue nil
+  def self.Cbc(lp, opts={})
+    lp.solve_with(CBC, opts)
   end
 
-  def self.Scip(lp)
-    lp.solve_with(SCIP) rescue nil
+  def self.Scip(lp, opts={})
+    lp.solve_with(SCIP, opts) rescue nil
   end
 
-  def self.Pcbc(lp)
-    lp.solve_with(PCBC) rescue nil
+  def self.Pcbc(lp, opts={})
+    lp.solve_with(PCBC, opts) rescue nil
   end
 
-  def self.Pscip(lp)
-    lp.solve_with(PSCIP) rescue nil
+  def self.Pscip(lp, opts={})
+    lp.solve_with(PSCIP, opts) rescue nil
+  end
+
+  def self.Pscip(lp, opts={})
+    lp.solve_with(PSCIP, opts) rescue nil
+  end
+
+  def self.Gurobi(lp, opts={})
+    lp.solve_with(GUROBI, opts) rescue nil
   end
 
   def self.Max(objective_expression)
@@ -86,12 +97,12 @@ module Rulp
       self
     end
 
-    def solve
-      Rulp.send(self.solver, self)
+    def solve(opts={})
+      Rulp.send(self.solver, self, opts)
     end
 
-    def method_missing(method_name)
-      self.call(method_name)
+    def method_missing(method_name, *args)
+      self.call(method_name, *args)
     end
 
     def solver(solver=nil)
@@ -99,8 +110,8 @@ module Rulp
       solver = solver[0].upcase + solver[1..-1].downcase
     end
 
-    def call(using=nil)
-      Rulp.send(self.solver(using), self)
+    def call(using=nil, options={})
+      Rulp.send(self.solver(using), self, options)
     end
 
     def constraints
@@ -139,17 +150,19 @@ module Rulp
       IO.write(filename, self)
     end
 
-    def solve_with(type, open_definition=false, open_solution=false)
+    def solve_with(type, options={})
       filename = get_output_filename
-      solver = SOLVERS[type].new(filename)
+      solver = SOLVERS[type].new(filename, options)
 
       "Writing problem".log(:info)
       IO.write(filename, self)
 
-      `open #{filename}` if open_definition
+      `open #{filename}` if options[:open_definition]
 
       "Solving problem".log(:info)
-      _, time = _profile{ solver.solve(open_solution) }
+      _, time = _profile{ solver.solve(options) }
+
+      `open #{solver.outfile}` if options[:open_solution]
 
       "Solver took #{time}".log(:debug)
 

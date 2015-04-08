@@ -1,5 +1,8 @@
 class Solver
-  def initialize(filename)
+  attr_reader :options, :outfile
+
+  def initialize(filename, options)
+    @options = options
     @filename = filename
     @outfile = get_output_filename
     raise StandardError.new("Couldn't find solver #{executable}!") if `which #{executable}`.length == 0
@@ -32,3 +35,4 @@ require_relative 'scip'
 require_relative 'glpk'
 require_relative 'pscip'
 require_relative 'pcbc'
+require_relative 'gurobi'

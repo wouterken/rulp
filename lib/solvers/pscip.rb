@@ -4,11 +4,10 @@ class PScip < Solver
     :fscip
   end
 
-  def solve(open_solution=false)
+  def solve(options)
     command = "touch /tmp/fscip_params; rm #{@outfile}; #{executable} /tmp/fscip_params #{@filename} -fsol #{@outfile}"
     command += " -s ./scip.set" if File.exists?("./scip.set")
     system(command)
-    `open #{@outfile}` if open_solution
   end
 
   def store_results(variables)

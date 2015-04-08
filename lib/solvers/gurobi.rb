@@ -1,12 +1,15 @@
 class Gurobi < Solver
-  def solve(options)
-    command = "gurobi_cl ResultFile=#{@outfile} #{@filename}"
-    command %= options[:gap] ? "MipGap=#{options[:gap]}":""
+  def solve
+    command = "#{executable} ResultFile=#{@outfile} %s %s #{@filename}"
+    command %= [
+      options[:gap] ? "MipGap=#{options[:gap]}":"",
+      options[:node_limit] ? "NodeLimit=#{options[:node_limit]}":""
+    ]
     system(command)
   end
 
   def self.executable
-    :cbc
+    :gurobi_cl
   end
 
   def store_results(variables)

@@ -13,8 +13,6 @@ require 'set'
 GLPK  = "glpsol"
 SCIP  = "scip"
 CBC   = "cbc"
-PSCIP = "pscip"
-PCBC  = "pcbc"
 GUROBI = "gurobi_cl"
 
 module Rulp
@@ -26,20 +24,16 @@ module Rulp
   GUROBI  = ::GUROBI
   SCIP  = ::SCIP
   CBC   = ::CBC
-  PSCIP = ::PSCIP
-  PCBC  = ::PCBC
 
   SOLVERS = {
     GLPK     => Glpk,
     SCIP     => Scip,
-    PSCIP    => PScip,
-    PCBC     => PCbc,
     CBC      => Cbc,
     GUROBI   => Gurobi,
   }
 
   def self.Glpk(lp, opts={})
-    lp.solve_with(GLPK, opts) rescue nil
+    lp.solve_with(GLPK, opts)
   end
 
   def self.Cbc(lp, opts={})
@@ -47,23 +41,11 @@ module Rulp
   end
 
   def self.Scip(lp, opts={})
-    lp.solve_with(SCIP, opts) rescue nil
-  end
-
-  def self.Pcbc(lp, opts={})
-    lp.solve_with(PCBC, opts) rescue nil
-  end
-
-  def self.Pscip(lp, opts={})
-    lp.solve_with(PSCIP, opts) rescue nil
-  end
-
-  def self.Pscip(lp, opts={})
-    lp.solve_with(PSCIP, opts) rescue nil
+    lp.solve_with(SCIP, opts)
   end
 
   def self.Gurobi(lp, opts={})
-    lp.solve_with(GUROBI, opts) rescue nil
+    lp.solve_with(GUROBI, opts)
   end
 
   def self.Max(objective_expression)
@@ -160,7 +142,7 @@ module Rulp
       `open #{filename}` if options[:open_definition]
 
       "Solving problem".log(:info)
-      _, time = _profile{ solver.solve(options) }
+      _, time = _profile{ solver.solve }
 
       `open #{solver.outfile}` if options[:open_solution]
 

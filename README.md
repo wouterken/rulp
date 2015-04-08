@@ -13,13 +13,17 @@
   - [Sample Code](#sample-code)
   - [Installation](#installation)
       - [Scip:](#scip)
+      - [UG (Scip parallel)](#ug-scip-parallel)
       - [Coin Cbc:](#coin-cbc)
       - [GLPK:](#glpk)
   - [Usage](#usage)
       - [Variables](#variables)
-    - [Variable Constraints](#variable-constraints)
-    - [Problem constraints](#problem-constraints)
-    - [Solving or saving 'lp' files](#solving-or-saving-lp-files)
+      - [Variable Constraints](#variable-constraints)
+      - [Problem constraints](#problem-constraints)
+      - [Solving or saving 'lp' files](#solving-or-saving-lp-files)
+      - [Additional Options](#additional-options)
+        - [Mip tolerance.](#mip-tolerance)
+        - [Node Limit.](#node-limit)
       - [Saving LP files.](#saving-lp-files)
     - [Examples.](#examples)
     - [Rulp Executable](#rulp-executable)
@@ -97,7 +101,7 @@ Extract Scip source
 
 	gunzip -c scipoptsuite-3.1.1.tgz  | tar xvf -
 
-Scip relies on a number of libraries including ZLIB GMP and READLINE.
+Scip relies on a number of libraries including ZLIB, GMP and READLINE.
 Please read the INSTALL directory in the application directory for help
 on getting these installed.
 
@@ -167,7 +171,7 @@ From the download directory
 
 	tar -xzf glpk-4.55.tar.gz
 	cd glpk-4.55
-	 ./configure --prefix=/usr/local
+	./configure --prefix=/usr/local
 	make
 	sudo make install
 
@@ -225,7 +229,7 @@ At this point, you should have GLPK installed. Verify it:
 	 #<LV:0x007ffc4cc0c970 @name="Unit10">]
 ```
 
-### Variable Constraints
+#### Variable Constraints
 
 Add variable constraints to a variable using the <,>,<=,>=,== operators.
 Be careful to use '==' and not '=' when expressing equality.
@@ -246,7 +250,7 @@ Inter-variable constraints should be expressed as problem constrants. (Explained
 	=> "y = 10"
 ```
 
-### Problem constraints
+#### Problem constraints
 
 Constraints are added to a problem using the :[] syntax.
 
@@ -274,7 +278,7 @@ You can add multiple constraints at once by comma separating them as seen in the
 		          ]
 ```
 
-### Solving or saving 'lp' files
+#### Solving or saving 'lp' files
 
 There are multiple ways to solve the problem or output the problem to an 'lp' file.
 Currently the Rulp library supports calling installed executables for Scip, Cbc and Glpk.
@@ -296,9 +300,8 @@ Default solver:
 ```ruby
 	@problem.solve
 	# this will use the solver specified in the environment variable 'SOLVER' by default.
-	# This can be 'scip', 'cbc', or 'glpk'.
-	# You can also try and run scip or cbc in parallel using
-	# 'pscip' and 'pcbc'
+	# This can be 'scip', 'cbc', 'glpk' or 'gurobi'.
+	# You can also try and run scip or cbc in parallel using by passing an options argument containing { parallel: true }
 	# If no variable is given it uses 'scip' as a default.
 ```
 
@@ -317,9 +320,9 @@ Explicit solver:
 	#   Or
 	@problem.glpk
 	# 	Or
-	@problem.pcbc
+	@problem.cbc(parallel: true)
 	#   Or
-	@problem.pscip
+	@problem.scip(parallel: true)
 ```
 
 Or
@@ -328,37 +331,70 @@ Or
 	Rulp::Scip(@problem)
 	Rulp::Glpk(@problem)
 	Rulp::Cbc(@problem)
-	Rulp::Pscip(@problem)
-	Rulp::Pcbc(@problem)
+	Rulp::scip(@problem, parallel: true)
+	Rulp::cbc(@problem, parallel: true)
 ```
 
 For debugging purposes you may wish to see the input and output files generated and consumed by Rulp.
-To do this you can use the following extended syntax:
+To do this you can pass ```open_definition``` and ```open_solution``` as options with the following extended syntax:
 
 ```ruby
-	def solve_with(type, open_definition=false, open_solution=false)...
+	Rulp::Cbc(@problem, open_definition: true, open_solution: true)
 ```
 
 The optional booleans will optionally call the 'open' utility to open the problem definition or the solution. (This utility is installed by default on a mac and will not work if the utility is not on your PATH)
 
+
+#### Additional Options
+
+##### Mip tolerance.
+You can provide a MIP tolerance to any of the solvers to allow it
+to return a sub-optimal result within this tolerance from the dual bound.
+
 ```ruby
-	@problem.solve_with(SCIP, true, true)
+# Various ways to invoke this option
+@problem.cbc(gap: 0.05)
+Rulp::Cbc(@problem, gap: 0.05)
+@problem.solve(gap: 0.05)
+```
+
+##### Node Limit.
+You can limit the number of nodes the solver is able to explore before it must return
+it's current most optimal solution. If it has not discovered a solution by the time it hits
+the node limit it will return nil. Glpk does not accept a node limit option.
+
+```ruby
+# Various ways to invoke this option
+@problem.cbc(node_limit: 10_000)
+Rulp::Cbc(@problem, node_limit: 10_000)
+@problem.solve(node_limit: 10_000)
+```
+
+For Scip you can also specify these limits in a settings file called scip.set in the current
+directory. Options passed to Rulp will overwrite these values.
+
+```
+# E.g inside ./scip.set
+limits/gap   = 0.15 # optimality within 0.1%.
+limits/nodes = 200000 # No more than 200000 nodes explored
 ```
 
 #### Saving LP files.
 
-You may not wish to use one of the RULP compatible but another solver that is able to read .lp files. (E.g CPLEX or Gurobi) but still want to use Rulp to generate your LP file. In this case you should use Rulp to output your lp problem description to a file of your choice. To do this simply use the following call
+You may not wish to use one of the RULP compatible solvers but instead another solver that is able to read .lp files. (E.g CPLEX) but still want to use Rulp to generate your LP file. In this case you should use Rulp to output your lp problem description to a file of your choice. To do this simply use the following call
 
 ```ruby
 	@problem.save("/Users/johndoe/Desktop/myproblem.lp")
 ```
 
 OR
+
 ```ruby
 	@problem.output("/Users/johndoe/Desktop/myproblem.lp")
 ```
 
 You should also be able to call
+
 ```ruby
 	@problem.save
 ```

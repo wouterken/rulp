@@ -1,5 +1,5 @@
 class Glpk < Solver
-  def solve(options)
+  def solve
     command = "#{executable} --lp #{@filename} %s --cuts --write #{@outfile}"
     command %= options[:gap] ? "--mipgap #{options[:gap]}" : ""
     system(command)

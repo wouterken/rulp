@@ -1,9 +1,16 @@
 class Cbc < Solver
-  def solve(options)
-    command =  "#{executable} #{@filename} %s branch solution #{@outfile}"
-    command %= options[:gap] ? "ratio #{options[:gap]}":""
+  def solve
+    if options[:parallel]
+      command =  "#{executable} #{@filename} %s %s threads 8 branch solution #{@outfile}"
+    else
+      command =  "#{executable} #{@filename} %s %s branch solution #{@outfile}"
+    end
+    command %= [
+      options[:gap] ? "ratio #{options[:gap]}":"",
+      options[:node_limit] ? "maxN #{options[:node_limit]}":""
+    ]
+
     system(command)
-    `open #{@outfile}` if options[:open_solution]
   end
 
   def self.executable

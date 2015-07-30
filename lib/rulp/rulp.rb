@@ -4,7 +4,7 @@ require_relative "lv"
 require_relative "constraint"
 require_relative "expression"
 
-require_relative "../solvers/solvers"
+require_relative "../solvers/solver"
 require_relative "../extensions/extensions"
 require_relative "../helpers/log"
 
@@ -74,6 +74,7 @@ module Rulp
     end
 
     def [](*constraints)
+      constraints.flatten!
       @constraints.concat(constraints)
       @variables.merge(constraints.map(&:variables).flatten)
       self
@@ -136,10 +137,10 @@ module Rulp
       filename = get_output_filename
       solver = SOLVERS[type].new(filename, options)
 
-      "Writing problem".log(:info)
-      IO.write(filename, self)
+        "Writing problem".log(:info)
+        IO.write(filename, self)
 
-      `open #{filename}` if options[:open_definition]
+        `open #{filename}` if options[:open_definition]
 
       "Solving problem".log(:info)
       _, time = _profile{ solver.solve }
@@ -159,6 +160,16 @@ module Rulp
 
     def inspect
       to_s
+    end
+
+    def write(output)
+      output.puts "#{@objective}"
+      output.puts " obj: #{@objective_expression}"
+      output.puts "Subject to"
+      output.puts "#{constraints}"
+      output.puts "Bounds"
+      output.puts "#{bounds}#{integers}#{bits}"
+      output.puts "End"
     end
 
     def to_s

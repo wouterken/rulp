@@ -493,9 +493,8 @@ Rulp::Max(points)[
 => 538.2125623353652 (# You will get a different value as data was generated randomly)
 
 # Now how do we check which purchases were selected?
-selected_purchases = [*0..1000].select do |i|
-	Purchase_b(i).value
-end.map(&Purchase_b)
+selected_purchases = [*0..1000].map(&Purchase_b).select(&:selected?)
+
 => [Purchase27(b)[true],
  Purchase86(b)[true],
  Purchase120(b)[true],

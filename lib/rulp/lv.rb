@@ -77,9 +77,19 @@ class LV
     end
   end
 
+  def value?
+    value ? value : false
+  end
+
+  def selected?
+    value?
+  end
+
   def inspect
     "#{name}#{args.join("-")}(#{suffix})[#{value || 'undefined'}]"
   end
+
+  alias_method :selected?, :value?
 end
 
 class BV < LV;

@@ -28,6 +28,25 @@ class Solver
   def self.exists?
     return `which #{self.executable}`.length != 0
   end
+
+  def next_pipe
+    filename = "./tmp/_rulp_pipe"
+    file_index = 1
+    file_index += 1 while File.exists?("#{filename}_#{file_index}")
+    pipe = "#{filename}_#{file_index}"
+    `mkfifo #{pipe}`
+    pipe
+  end
+
+  def with_pipe(pipe)
+    output = open(pipe, 'w+')
+    thread = Thread.new{
+      yield output
+      output.flush
+    }
+    return thread, output
+  end
+
 end
 
 require_relative 'cbc'

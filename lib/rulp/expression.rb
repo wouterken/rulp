@@ -13,9 +13,11 @@ class Expressions
   end
 
   def to_s
-    @expressions.map{|expression|
-      [expression.operand < 0 ? " " : " + ", expression.to_s]
-    }.flatten[1..-1].join("")
+    as_str = @expressions[0].to_s[3..-1]
+    (@expressions.length - 1).times do |i|
+      as_str << @expressions[i + 1].to_s
+    end
+    as_str
   end
 
   def variables
@@ -100,13 +102,15 @@ class Fragment
   end
 
   def to_s
-    case @operand
-    when -1
-      "-#{@lv}"
-    when 1
-      "#{@lv}"
-    else
-    "#{@operand} #{@lv}"
+    @as_str ||= begin
+      case @operand
+      when -1
+        " - #{@lv}"
+      when 1
+        " + #{@lv}"
+      else
+      " + #{@operand} #{@lv}"
+      end
     end
   end
 end

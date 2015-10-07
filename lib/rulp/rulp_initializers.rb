@@ -3,6 +3,7 @@ module Rulp
     def initialize(name, args)
       @name = name
       @args = args
+      @identifier = "#{self.name}#{self.args.join("_")}"
       raise StandardError.new("Variable with the name #{self} of a different type (#{LV::names_table[self.to_s].class}) already exists") if LV::names_table[self.to_s]
       LV::names_table[self.to_s] = self
     end
@@ -22,7 +23,7 @@ module Rulp
     end
 
     def to_s
-      "#{self.name}#{self.args.join("_")}"
+      @identifier
     end
   end
 end

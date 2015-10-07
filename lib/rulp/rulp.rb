@@ -74,9 +74,13 @@ module Rulp
     end
 
     def [](*constraints)
+      "Got constraints".log(:info)
       constraints.flatten!
+      "Flattened constraints".log(:info)
       @constraints.concat(constraints)
-      @variables.merge(constraints.map(&:variables).flatten)
+      "Joint constraints".log(:info)
+      @variables.merge(constraints.flat_map(&:variables).uniq)
+      "Extracted variables".log(:info)
       self
     end
 
@@ -98,14 +102,12 @@ module Rulp
     end
 
     def constraints
-      constraints_str = @constraints.map.with_index{|constraint, i|
-        " c#{i}: #{constraint}"
-      }.join("\n").strip
-      if constraints_str.empty?
-        "0 #{@variables.first} = 0"
-      else
-        "  #{constraints_str}"
-      end
+      return  "0 #{@variables.first} = 0" if @constraints.length == 0
+      constraints_str = " "
+      @constraints.each.with_index{|constraint, i|
+        constraints_str << " c#{i}: #{constraint}\n"
+      }
+      constraints_str
     end
 
     def integers
@@ -137,10 +139,10 @@ module Rulp
       filename = get_output_filename
       solver = SOLVERS[type].new(filename, options)
 
-        "Writing problem".log(:info)
-        IO.write(filename, self)
+      "Writing problem".log(:info)
+      IO.write(filename, self)
 
-        `open #{filename}` if options[:open_definition]
+      `open #{filename}` if options[:open_definition]
 
       "Solving problem".log(:info)
       _, time = _profile{ solver.solve }

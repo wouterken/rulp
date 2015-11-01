@@ -4,7 +4,7 @@ gem "minitest"
 require "minitest/autorun"
 
 Rulp::Logger::level = :off
-
+Rulp::Logger::print_solver_outputs = false
 
 def each_solver
   [:scip, :cbc, :glpk, :gurobi].each do |solver|
@@ -12,7 +12,7 @@ def each_solver
     if Rulp::solver_exists?(solver)
       yield(solver)
     else
-      puts "Couldn't find solver #{solver}"
+      "Couldn't find solver #{solver}".log(:info)
     end
   end
 end

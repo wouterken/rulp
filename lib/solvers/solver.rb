@@ -21,6 +21,10 @@ class Solver
     self.class.executable
   end
 
+  def exec(command)
+    Rulp.exec(command)
+  end
+
   def solver_exists?
     @solver_exists || false
   end

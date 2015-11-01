@@ -34,6 +34,14 @@ module Rulp
       @@level || :info
     end
 
+    def self.print_solver_outputs
+      @@solver_level
+    end
+
+    def self.print_solver_outputs=(value)
+      @@solver_level = value
+    end
+
     def self.log(level, message)
       if(LEVELS[level].to_i <= LEVELS[self.level])
         puts("[#{colorize(level)}] #{message}")
@@ -58,6 +66,7 @@ module Rulp
     end
 
     self.level = :info
+    self.print_solver_outputs = true
 
     class ::String
       def log(level)

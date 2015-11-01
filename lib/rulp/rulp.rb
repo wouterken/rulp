@@ -64,6 +64,11 @@ module Rulp
     solver_class.exists? if(solver_class)
   end
 
+
+  def self.exec(command)
+    system("#{command} #{Rulp::Logger.print_solver_outputs ? "" : "> /dev/null 2>&1"}")
+  end
+
   class Problem
     def initialize(objective, objective_expression)
       @objective = objective
@@ -142,12 +147,12 @@ module Rulp
       "Writing problem".log(:info)
       IO.write(filename, self)
 
-      `open #{filename}` if options[:open_definition]
+      Rulp.exec("open #{filename}") if options[:open_definition]
 
       "Solving problem".log(:info)
       _, time = _profile{ solver.solve }
 
-      `open #{solver.outfile}` if options[:open_solution]
+      Rulp.exec("open #{solver.outfile}") if options[:open_solution]
 
       "Solver took #{time}".log(:debug)
 

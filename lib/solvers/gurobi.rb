@@ -5,7 +5,7 @@ class Gurobi < Solver
       options[:gap] ? "MipGap=#{options[:gap]}":"",
       options[:node_limit] ? "NodeLimit=#{options[:node_limit]}":""
     ]
-    system(command)
+    exec(command)
   end
 
   def self.executable

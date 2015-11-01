@@ -10,7 +10,7 @@ class Cbc < Solver
       options[:node_limit] ? "maxN #{options[:node_limit]}":""
     ]
 
-    system(command)
+    exec(command)
   end
 
   def self.executable

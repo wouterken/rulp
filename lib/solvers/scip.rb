@@ -6,11 +6,14 @@ class Scip < Solver
   def solve
     settings = settings_file
     if options[:parallel]
-      command = "touch /tmp/fscip_params; rm #{@outfile}; fscip /tmp/fscip_params #{@filename} -fsol #{@outfile} -s #{settings}"
+      exec("touch /tmp/fscip_params")
+      exec("rm #{@outfile}")
+      command = "fscip /tmp/fscip_params #{@filename} -fsol #{@outfile} -s #{settings}"
     else
-      command = "rm #{@outfile}; #{executable} -f #{@filename} -l #{@outfile} -s #{settings}"
+      exec("rm #{@outfile}")
+      command = "#{executable} -f #{@filename} -l #{@outfile} -s #{settings}"
     end
-    system(command)
+    exec(command)
   end
 
   def settings_file

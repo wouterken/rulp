@@ -9,6 +9,7 @@ require_relative "../extensions/extensions"
 require_relative "../helpers/log"
 
 require 'set'
+require 'open3'
 
 GLPK  = "glpsol"
 SCIP  = "scip"
@@ -66,10 +67,20 @@ module Rulp
 
 
   def self.exec(command)
-    system("#{command} #{Rulp::Logger.print_solver_outputs ? "" : "> /dev/null 2>&1"}")
+    result = ""
+    Open3.popen2e("#{command} #{Rulp::Logger.print_solver_outputs ? "" : "> /dev/null 2>&1"}") do | inp, out, thr|
+      out.each do |line|
+        puts line
+        result << line
+      end
+    end
+    return result
   end
 
   class Problem
+
+    attr_accessor :result, :trace
+
     def initialize(objective, objective_expression)
       @objective = objective
       @variables = Set.new
@@ -150,7 +161,7 @@ module Rulp
       Rulp.exec("open #{filename}") if options[:open_definition]
 
       "Solving problem".log(:info)
-      _, time = _profile{ solver.solve }
+      self.trace, time = _profile{ solver.solve }
 
       Rulp.exec("open #{solver.outfile}") if options[:open_solution]
 
@@ -159,10 +170,10 @@ module Rulp
       "Parsing result".log(:info)
       solver.store_results(@variables)
 
-      result = @objective_expression.evaluate
+      self.result = @objective_expression.evaluate
 
       "Objective: #{result}\n#{@variables.map{|v|[v.name, "=", v.value].join(' ') if v.value}.compact.join("\n")}".log(:debug)
-      return result
+      return self.result
     end
 
     def inspect

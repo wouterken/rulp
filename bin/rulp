@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require_relative '../lib/rulp'
 begin
+  require 'pry'
   load Gem.bin_path('pry', 'pry', ">= 0.9")
 rescue
   require 'irb'

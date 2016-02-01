@@ -152,6 +152,7 @@ module Rulp
     end
 
     def solve_with(type, options={})
+
       filename = get_output_filename
       solver = SOLVERS[type].new(filename, options)
 
@@ -169,6 +170,9 @@ module Rulp
 
       "Parsing result".log(:info)
       solver.store_results(@variables)
+
+      solver.remove_lp_file  if options[:remove_lp_file]
+      solver.remove_sol_file if options[:remove_sol_file]
 
       self.result = @objective_expression.evaluate
 

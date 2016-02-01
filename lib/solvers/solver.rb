@@ -25,6 +25,14 @@ class Solver
     Rulp.exec(command)
   end
 
+  def remove_lp_file
+    FileUtils.rm(@filename)
+  end
+
+  def remove_sol_file
+    FileUtils.rm(@outfile)
+  end
+
   def solver_exists?
     @solver_exists || false
   end

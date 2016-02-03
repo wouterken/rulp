@@ -10,6 +10,7 @@ require_relative "../helpers/log"
 
 require 'set'
 require 'open3'
+require 'logger'
 
 GLPK  = "glpsol"
 SCIP  = "scip"
@@ -18,6 +19,9 @@ GUROBI = "gurobi_cl"
 
 module Rulp
   attr_accessor :expressions
+  extend Rulp::Log
+  self.print_solver_outputs = true
+
   MIN = "Minimize"
   MAX = "Maximize"
 
@@ -32,6 +36,7 @@ module Rulp
     CBC      => Cbc,
     GUROBI   => Gurobi,
   }
+
 
   def self.Glpk(lp, opts={})
     lp.solve_with(GLPK, opts)
@@ -50,12 +55,12 @@ module Rulp
   end
 
   def self.Max(objective_expression)
-    "Creating maximization problem".log :info
+    Rulp.log(Logger::INFO, "Creating maximization problem")
     Problem.new(Rulp::MAX, objective_expression)
   end
 
   def self.Min(objective_expression)
-    "Creating minimization problem".log :info
+    Rulp.log(Logger::INFO, "Creating minimization problem")
     Problem.new(Rulp::MIN, objective_expression)
   end
 
@@ -68,9 +73,9 @@ module Rulp
 
   def self.exec(command)
     result = ""
-    Open3.popen2e("#{command} #{Rulp::Logger.print_solver_outputs ? "" : "> /dev/null 2>&1"}") do | inp, out, thr|
+    Open3.popen2e("#{command} #{Rulp.print_solver_outputs ? "" : "> /dev/null 2>&1"}") do | inp, out, thr|
       out.each do |line|
-        puts line
+        Rulp.log(Logger::DEBUG, line)
         result << line
       end
     end
@@ -90,13 +95,13 @@ module Rulp
     end
 
     def [](*constraints)
-      "Got constraints".log(:info)
+      Rulp.log(Logger::INFO, "Got constraints")
       constraints.flatten!
-      "Flattened constraints".log(:info)
+      Rulp.log(Logger::INFO, "Flattened constraints")
       @constraints.concat(constraints)
-      "Joint constraints".log(:info)
+      Rulp.log(Logger::INFO, "Joint constraints")
       @variables.merge(constraints.flat_map(&:variables).uniq)
-      "Extracted variables".log(:info)
+      Rulp.log(Logger::INFO, "Extracted variables")
       self
     end
 
@@ -156,19 +161,19 @@ module Rulp
       filename = get_output_filename
       solver = SOLVERS[type].new(filename, options)
 
-      "Writing problem".log(:info)
+      Rulp.log(Logger::INFO, "Writing problem")
       IO.write(filename, self)
 
       Rulp.exec("open #{filename}") if options[:open_definition]
 
-      "Solving problem".log(:info)
+      Rulp.log(Logger::INFO, "Solving problem")
       self.trace, time = _profile{ solver.solve }
 
       Rulp.exec("open #{solver.outfile}") if options[:open_solution]
 
-      "Solver took #{time}".log(:debug)
+      Rulp.log(Logger::DEBUG, "Solver took #{time}")
 
-      "Parsing result".log(:info)
+      Rulp.log(Logger::INFO, "Parsing result")
       solver.store_results(@variables)
 
       solver.remove_lp_file  if options[:remove_lp_file]
@@ -176,7 +181,7 @@ module Rulp
 
       self.result = @objective_expression.evaluate
 
-      "Objective: #{result}\n#{@variables.map{|v|[v.name, "=", v.value].join(' ') if v.value}.compact.join("\n")}".log(:debug)
+      Rulp.log(Logger::DEBUG, "Objective: #{result}\n#{@variables.map{|v|[v.name, "=", v.value].join(' ') if v.value}.compact.join("\n")}")
       return self.result
     end
 

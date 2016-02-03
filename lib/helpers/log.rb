@@ -1,83 +1,36 @@
-##
-# Basic logger module.
-# Allows logging in the format
-#
-# "This is a string".log(:debug)
-# "Oh no!".log(:error)
-#
-# Log level is set as follows.
-# Rulp::Logger::level = :debug
-#
-##
+require 'logger'
+
 module Rulp
-  module Logger
-    DEBUG = 5
-    INFO  = 4
-    WARN  = 3
-    ERROR = 2
-    OFF   = 1
+  module Log
 
-    LEVELS = {
-      debug: DEBUG,
-      info: INFO,
-      warn: WARN,
-      error: ERROR,
-      off: OFF
-    }
-
-    def self.level=(value)
-      raise StandardError.new("#{value} is not a valid log level") unless LEVELS[value]
-      @@level = value
+    def print_solver_outputs=(print)
+      @@print_solver_outputs = print
     end
 
-    def self.level
-      @@level || :info
+    def print_solver_outputs
+      @@print_solver_outputs
     end
 
-    def self.print_solver_outputs
-      @@solver_level
+    def log_level=(level)
+      @@log_level = level
     end
 
-    def self.print_solver_outputs=(value)
-      @@solver_level = value
+    def log_level
+      @@log_level || Logger::DEBUG
     end
 
-    def self.log(level, message)
-      if(LEVELS[level].to_i <= LEVELS[self.level])
-        puts("[#{colorize(level)}] #{message}")
+    def log(level, message)
+      if level >= self.log_level
+        self.logger.add(level, message)
       end
     end
 
-    def self.colorize(level)
-      if defined?(Pry) && Pry.color
-        case level.to_sym
-        when :debug
-          Pry::Helpers::Text.cyan(level)
-        when :info
-          Pry::Helpers::Text.green(level)
-        when :warn
-          Pry::Helpers::Text.magenta(level)
-        when :error
-          Pry::Helpers::Text.red(level)
-        end
-      else
-        level
-      end
+    def logger=(logger)
+      @@logger = logger
     end
 
-    self.level = :info
-    self.print_solver_outputs = true
-
-    class ::String
-      def log(level)
-        Logger::log(level, self)
-      end
-    end
-
-    class ::Array
-      def log(level, sep="\n")
-        Logger::log(level, self.join("#{sep}[#{level}] "))
-      end
+    def logger
+      @@logger ||= Logger.new(STDOUT)
     end
   end
 end

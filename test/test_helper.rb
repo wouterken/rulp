@@ -1,10 +1,11 @@
 require_relative "../lib/rulp"
+require 'logger'
 
 gem "minitest"
 require "minitest/autorun"
 
-Rulp::Logger::level = :off
-Rulp::Logger::print_solver_outputs = false
+Rulp::log_level = Logger::UNKNOWN
+Rulp::print_solver_outputs = false
 
 def each_solver
   [:scip, :cbc, :glpk, :gurobi].each do |solver|
@@ -12,7 +13,7 @@ def each_solver
     if Rulp::solver_exists?(solver)
       yield(solver)
     else
-      "Couldn't find solver #{solver}".log(:info)
+      Rulp::log(Logger::INFO, "Couldn't find solver #{solver}")
     end
   end
 end

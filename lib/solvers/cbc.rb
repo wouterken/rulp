@@ -19,7 +19,7 @@ class Cbc < Solver
 
   def store_results(variables)
     rows = IO.read(@outfile).split("\n")
-    objective = rows[0].split(/\s+/)[-1].to_f
+    objective_str = rows[0].split(/\s+/)[-1]
     vars_by_name = {}
     rows[1..-1].each do |row|
       cols = row.strip.split(/\s+/)
@@ -28,6 +28,7 @@ class Cbc < Solver
     variables.each do |var|
       var.value = vars_by_name[var.to_s].to_f
     end
-    return objective
+    self.unsuccessful = rows[0].start_with?('Infeasible')
+    return objective_str.to_f
   end
 end

@@ -44,7 +44,7 @@ class Scip < Solver
     stripped = start.sub(/Statistics.+/m, "").strip
     rows     = stripped.split("\n")
 
-    objective = rows[0].split(/\s+/)[-1].to_f
+    objective_str = rows[0].split(/\s+/)[-1]
 
     vars_by_name = {}
     rows[1..-1].each do |row|
@@ -54,7 +54,7 @@ class Scip < Solver
     variables.each do |var|
       var.value = vars_by_name[var.to_s].to_f
     end
-
-    return objective
+    self.unsuccessful = !(Float(objective_str) rescue false)
+    return objective_str.to_f
   end
 end

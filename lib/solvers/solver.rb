@@ -1,5 +1,6 @@
 class Solver
   attr_reader :options, :outfile
+  attr_accessor :unsuccessful
 
   def initialize(filename, options)
     @options = options

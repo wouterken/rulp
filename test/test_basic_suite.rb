@@ -48,11 +48,11 @@ class BasicSuite < Minitest::Test
 
       # Integer variables respect integer bounds
       Rulp::Min(X_f).(solver)
-      assert_equal X_f.value, -345.4321
+      assert_in_delta X_f.value, -345.4321, 0.001
 
       # Integer variables respect integer bounds
       Rulp::Max(X_f).(solver)
-      assert_equal X_f.value, 345.4321
+      assert_in_delta X_f.value, 345.4321, 0.001
     end
   end
 end

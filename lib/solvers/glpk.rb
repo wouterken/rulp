@@ -1,6 +1,6 @@
 class Glpk < Solver
   def solve
-    command = "#{executable} --lp #{@filename} %s --cuts --write #{@outfile}"
+    command = "#{executable} --lp #{@filename} %s --cuts --output #{@outfile}"
     command %= options[:gap] ? "--mipgap #{options[:gap]}" : ""
     exec(command)
   end
@@ -11,10 +11,16 @@ class Glpk < Solver
 
   def store_results(variables)
     rows = IO.read(@outfile).split("\n")
-    variables.zip(rows[-variables.count..-1]).each do |var, row|
-      cols = row.split(" ")
-      var.value = cols[[1, cols.count - 1].min].to_f
+    objective_str = rows[5].split(/\s+/)[-2]
+    vars_by_name = {}
+    rows[1..-1].each do |row|
+      cols = row.strip.split(/\s+/)
+      vars_by_name[cols[1].to_s] = cols[3].to_f
     end
-    return rows[1].split(" ")[-1]
+    variables.each do |var|
+      var.value = vars_by_name[var.to_s].to_f
+    end
+    self.unsuccessful = rows[-3].downcase.include?('infeasible')
+    return objective_str.to_f
   end
 end

@@ -21,7 +21,7 @@ module Rulp
   attr_accessor :expressions
   extend Rulp::Log
   self.print_solver_outputs = true
-
+  self.log_level = Logger::DEBUG
   MIN = "Minimize"
   MAX = "Maximize"
 
@@ -174,7 +174,18 @@ module Rulp
       Rulp.log(Logger::DEBUG, "Solver took #{time}")
 
       Rulp.log(Logger::INFO, "Parsing result")
+
+      unless solver.outfile
+        raise "No output file detected. Solver failed"
+        return
+      end
+
       solver.store_results(@variables)
+
+      if solver.unsuccessful
+        raise "Solve failed: solution infeasible" if IO.read(solver.outfile).downcase.include?("infeasible")
+        raise "Solve failed: all units undefined"
+      end
 
       solver.remove_lp_file  if options[:remove_lp_file]
       solver.remove_sol_file if options[:remove_sol_file]

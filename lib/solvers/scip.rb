@@ -44,7 +44,7 @@ class Scip < Solver
     stripped = start.sub(/Statistics.+/m, "").strip
     rows     = stripped.split("\n")
 
-    objective_str = rows[0].split(/\s+/)[-1]
+    objective_str = rows[options[:parallel] ? 1 : 0].split(/\s+/)[-1]
 
     vars_by_name = {}
     rows[1..-1].each do |row|

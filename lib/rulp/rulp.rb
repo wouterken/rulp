@@ -96,7 +96,7 @@ module Rulp
 
     def [](*constraints)
       Rulp.log(Logger::INFO, "Got constraints")
-      constraints.flatten!
+      constraints = constraints.flatten.select{|x| x.kind_of?(Constraint)}
       Rulp.log(Logger::INFO, "Flattened constraints")
       @constraints.concat(constraints)
       Rulp.log(Logger::INFO, "Joint constraints")

@@ -6,7 +6,7 @@ class Solver
     @options = options
     @filename = filename
     @outfile = get_output_filename
-    raise StandardError.new("Couldn't find solver #{executable}!") unless exists?
+    raise StandardError.new("Couldn't find solver #{executable}!") if `which #{executable}`.length == 0
   end
 
   def get_output_filename

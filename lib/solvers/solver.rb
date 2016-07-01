@@ -6,8 +6,7 @@ class Solver
     @options = options
     @filename = filename
     @outfile = get_output_filename
-    raise StandardError.new("Couldn't find solver #{executable}!") if `which #{executable}`.length == 0
-    @solver_exists = true
+    raise StandardError.new("Couldn't find solver #{executable}!") unless exists?
   end
 
   def get_output_filename
@@ -32,10 +31,6 @@ class Solver
 
   def remove_sol_file
     FileUtils.rm(@outfile)
-  end
-
-  def solver_exists?
-    @solver_exists || false
   end
 
   def self.exists?

@@ -1,9 +1,9 @@
 # Direct translation of the Whiskas Model 2 example from Pulp to Rulp
 # https://github.com/coin-or/pulp/blob/master/examples/WhiskasModel2.py
-# 
+#
 # Usage: SOLVER=Cbc ruby whiskas_model2.rb
-# 
-require "rulp"
+#
+require_relative "../lib/rulp"
 
 ingredients     = [Chicken_i, Beef_i, Mutton_i, Rice_i, Wheat_i, Gel_i]
 costs           = {Chicken: 0.013, Beef: 0.008, Mutton: 0.010, Rice: 0.002, Wheat: 0.005, Gel: 0.001}
@@ -13,7 +13,7 @@ fibre_percent   = {Chicken: 0.001, Beef: 0.005, Mutton: 0.003, Rice: 0.100, Whea
 salt_percent    = {Chicken: 0.002, Beef: 0.005, Mutton: 0.007, Rice: 0.002, Wheat: 0.008, Gel: 0.000}
 
 objective = ingredients.map{|i| costs[i.name] * i}.inject(:+)
-problem = Rulp::Min(objective) 
+problem = Rulp::Min(objective)
 problem[
   ingredients.inject(:+)                                      == 100,
   ingredients.map{|i| protein_percent[i.name] * i}.inject(:+) >= 8.0,

@@ -1,6 +1,8 @@
 require_relative "../lib/rulp"
 
-Rulp::Logger::level = :debug
+
+Rulp::log_level = Logger::DEBUG
+
 # maximize
 #   objective = 10 * x + 6 * y + 4 * z
 #

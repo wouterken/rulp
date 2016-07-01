@@ -40,7 +40,7 @@ class Scip < Solver
 
   def store_results(variables)
     results  = IO.read(@outfile)
-    start    = results.sub(/.*?primal solution:.*?=+/m, "")
+    start    = results.sub(/.*?primal solution.*?=+/m, "")
     stripped = start.sub(/Statistics.+/m, "").strip
     rows     = stripped.split("\n")
 

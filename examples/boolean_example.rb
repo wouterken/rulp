@@ -1,6 +1,6 @@
 require_relative "../lib/rulp"
 
-Rulp::Logger::level = :info
+Rulp::log_level = Logger::INFO
 
 ##
 #
@@ -16,10 +16,11 @@ items_costs = items.map{|item| item * Random.rand(1.0...5.0)}.sum
 Rulp::Min( items_costs ) [
   items_count  >= 10,
   items_costs  >= 15
-].scip
+].solve
 
 
 cost = items_costs.evaluate
+puts items.map(&:inspect)
 ##
 # 'cost' is the result of the objective function.
 # You can retrieve allocations by querying the variables.

@@ -86,7 +86,7 @@ class LV
   end
 
   def inspect
-    "#{name}#{args.join("-")}(#{suffix})[#{value || 'undefined'}]"
+    "#{name}#{args.join("-")}(#{suffix})[#{value.nil? ? 'undefined' : value }]"
   end
 
   alias_method :selected?, :value?

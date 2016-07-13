@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # An LP Variable. Used as arguments in LP Expressions.
 # The subtypes BV and IV represent Binary and Integer variables.
@@ -5,7 +7,9 @@
 ##
 class LV
   attr_reader :name, :args
-  attr_accessor :lt, :lte, :gt, :gte, :value
+  attr_writer :value
+  attr_accessor :lt, :lte, :gt, :gte
+
   include Rulp::Bounds
   include Rulp::Initializers
 
@@ -21,32 +25,15 @@ class LV
     "f"
   end
 
-  def self.method_missing(name, *args)
-    return self.definition(name, args)
-  end
-
-  def self.const_missing(name)
-    return self.definition(name)
-  end
-
-  def self.definition(name, args)
+  def self.definition(name, *args)
     identifier = "#{name}#{args.join("_")}"
-    self.class.send(:define_method, identifier){|index=nil|
-      if index
-        self.definition(name, index)
-      else
-        defined = LV::names_table["#{identifier}"]
-        if defined && defined.class != self
-          raise StandardError.new("ERROR:\n#{name} was already defined as a variable of type #{defined.class}."+
-                                  "You are trying to redefine it as a variable of type #{self}")
-        elsif(!defined)
-          self.new(name, args)
-        else
-          defined
-        end
-      end
-    }
-    return self.send(identifier) || self.new(name, args)
+    defined = LV::names_table["#{identifier}"]
+    case defined
+    when self then defined
+    when nil then self.new(name, args)
+    else raise StandardError.new("ERROR:\n#{name} was already defined as a variable of type #{defined.class}."+
+                              "You are trying to redefine it as a variable of type #{self}")
+    end
   end
 
   def * (numeric)
@@ -68,21 +55,15 @@ class LV
 
   def value
     return nil unless @value
-    if self.class == BV
-      return @value.round(2) == 1
-    elsif self.class == IV
-      return @value
-    else
-      @value
+    case self
+    when BV then @value.round(2) == 1
+    when IV then @value
+    else value
     end
   end
 
   def value?
     value ? value : false
-  end
-
-  def selected?
-    value?
   end
 
   def inspect

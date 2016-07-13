@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # An LP Expression constraint. A mathematical expression of which the result
 # must be constrained in some way.

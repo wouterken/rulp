@@ -17,7 +17,7 @@ class Scip < Solver
   end
 
   def settings_file
-    existing_settings = if File.exists?("./scip.set")
+    existing_settings = if File.exist?("./scip.set")
        IO.read("./scip.set")
     else
       ""

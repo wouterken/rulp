@@ -12,14 +12,14 @@ fat_percent     = {Chicken: 0.080, Beef: 0.100, Mutton: 0.110, Rice: 0.010, Whea
 fibre_percent   = {Chicken: 0.001, Beef: 0.005, Mutton: 0.003, Rice: 0.100, Wheat: 0.150, Gel: 0.000}
 salt_percent    = {Chicken: 0.002, Beef: 0.005, Mutton: 0.007, Rice: 0.002, Wheat: 0.008, Gel: 0.000}
 
-objective = ingredients.map{|i| costs[i.name] * i}.inject(:+)
+objective = ingredients.map{|i| costs[i.name.to_sym] * i}.inject(:+)
 problem = Rulp::Min(objective)
 problem[
   ingredients.inject(:+)                                      == 100,
-  ingredients.map{|i| protein_percent[i.name] * i}.inject(:+) >= 8.0,
-  ingredients.map{|i| fat_percent[i.name]     * i}.inject(:+) >= 6.0,
-  ingredients.map{|i| fibre_percent[i.name]   * i}.inject(:+) <= 2.0,
-  ingredients.map{|i| salt_percent[i.name]    * i}.inject(:+) <= 0.4,
+  ingredients.map{|i| protein_percent[i.name.to_sym] * i}.inject(:+) >= 8.0,
+  ingredients.map{|i| fat_percent[i.name.to_sym]     * i}.inject(:+) >= 6.0,
+  ingredients.map{|i| fibre_percent[i.name.to_sym]   * i}.inject(:+) <= 2.0,
+  ingredients.map{|i| salt_percent[i.name.to_sym]    * i}.inject(:+) <= 0.4,
 ]
 
 result = problem.solve

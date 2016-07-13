@@ -8,10 +8,6 @@ class Expressions
     @expressions = expressions
   end
 
-  def +(other)
-    return Expressions.new(@expressions + [other])
-  end
-
   def to_s
     as_str = @expressions[0].to_s[3..-1]
     (@expressions.length - 1).times do |i|
@@ -45,9 +41,11 @@ class Expressions
   end
 
   def self.[](value)
-    return Expressions.new([Fragment.new(value, 1)]) if value.kind_of?(LV)
-    return Expressions.new([value]) if value.kind_of?(Fragment)
-    return value if value.kind_of?(Expressions)
+    case value
+    when LV then Expressions.new([Fragment.new(value, 1)])
+    when Fragment then Expressions.new([value])
+    when Expressions then value
+    end
   end
 
   def evaluate
@@ -104,12 +102,9 @@ class Fragment
   def to_s
     @as_str ||= begin
       case @operand
-      when -1
-        " - #{@lv}"
-      when 1
-        " + #{@lv}"
-      else
-      " + #{@operand} #{@lv}"
+      when -1 then " - #{@lv}"
+      when 1 then " + #{@lv}"
+      else " + #{@operand} #{@lv}"
       end
     end
   end

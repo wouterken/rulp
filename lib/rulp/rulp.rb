@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "rulp_bounds"
 require_relative "rulp_initializers"
 require_relative "lv"
@@ -84,13 +86,14 @@ module Rulp
 
   class Problem
 
-    attr_accessor :result, :trace
+    attr_accessor :result, :trace, :lp_file
 
     def initialize(objective, objective_expression)
       @objective = objective
       @variables = Set.new
       @objective_expression = objective_expression.kind_of?(LV) ? 1 * objective_expression : objective_expression
       @variables.merge(@objective_expression.variables)
+      @lp_file = nil
       @constraints = []
     end
 
@@ -124,11 +127,9 @@ module Rulp
 
     def constraints
       return  "0 #{@variables.first} = 0" if @constraints.length == 0
-      constraints_str = " "
-      @constraints.each.with_index{|constraint, i|
-        constraints_str << " c#{i}: #{constraint}\n"
-      }
-      constraints_str
+      @constraints.each.with_index.map{|constraint, i|
+        " c#{i}: #{constraint}\n"
+      }.join
     end
 
     def integers
@@ -187,7 +188,11 @@ module Rulp
         raise "Solve failed: all units undefined"
       end
 
-      solver.remove_lp_file  if options[:remove_lp_file]
+      if options[:remove_lp_file]
+        solver.remove_lp_file
+      else
+        self.lp_file = solver.filename
+      end
       solver.remove_sol_file if options[:remove_sol_file]
 
       self.result = @objective_expression.evaluate

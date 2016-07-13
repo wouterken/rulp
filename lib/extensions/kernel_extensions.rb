@@ -23,13 +23,13 @@ module Kernel
       case method_name[-1]
       when "b"
         method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
-        return BV.send(method_name, args)
+        return BV.definition(method_name, args)
       when "i"
         method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
-        return IV.send(method_name, args)
+        return IV.definition(method_name, args)
       when "f"
         method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
-        return LV.send(method_name, args)
+        return LV.definition(method_name, args)
       end
     end
     old_method_missing(value, *args)

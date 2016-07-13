@@ -58,7 +58,7 @@ class LV
     case self
     when BV then @value.round(2) == 1
     when IV then @value
-    else value
+    else @value
     end
   end
 

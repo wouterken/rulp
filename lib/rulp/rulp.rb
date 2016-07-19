@@ -72,16 +72,13 @@ module Rulp
     solver_class.exists? if(solver_class)
   end
 
-
   def self.exec(command)
-    result = ""
     Open3.popen2e("#{command} #{Rulp.print_solver_outputs ? "" : "> /dev/null 2>&1"}") do | inp, out, thr|
-      out.each do |line|
+      out.each.map do |line|
         Rulp.log(Logger::DEBUG, line)
-        result << line
+        line
       end
-    end
-    return result
+    end.join
   end
 
   class Problem

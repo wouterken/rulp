@@ -104,6 +104,7 @@ class Fragment
       case @operand
       when -1 then " - #{@lv}"
       when 1 then " + #{@lv}"
+      when ->(op){ op < 0} then " - #{@operand.abs} #{@lv}"
       else " + #{@operand} #{@lv}"
       end
     end

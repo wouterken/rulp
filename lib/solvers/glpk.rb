@@ -13,9 +13,13 @@ class Glpk < Solver
     rows = IO.read(@outfile).split("\n")
     objective_str = rows[5].split(/\s+/)[-2]
     vars_by_name = {}
+    cols = []
     rows[1..-1].each do |row|
-      cols = row.strip.split(/\s+/)
-      vars_by_name[cols[1].to_s] = cols[3].to_f
+      cols.concat(row.strip.split(/\s+/))
+      if cols.length > 4
+        vars_by_name[cols[1].to_s] = cols[3].to_f
+        cols = []
+      end
     end
     variables.each do |var|
       var.value = vars_by_name[var.to_s].to_f

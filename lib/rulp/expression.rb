@@ -10,7 +10,7 @@ class Expressions
 
   def to_s
     as_str = @expressions[0].to_s
-    as_str = as_str[3..-1] if(as_str[1] == '+')
+    as_str = as_str[1] == '+' ? as_str[3..-1] : as_str.dup
     (@expressions.length - 1).times do |i|
       as_str << @expressions[i + 1].to_s
     end

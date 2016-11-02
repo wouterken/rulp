@@ -86,12 +86,16 @@ module Rulp
     attr_accessor :result, :trace, :lp_file
 
     def initialize(objective, objective_expression)
-      @objective = objective
       @variables = Set.new
-      @objective_expression = objective_expression.kind_of?(LV) ? 1 * objective_expression : objective_expression
-      @variables.merge(@objective_expression.variables)
+      @objective = objective
       @lp_file = nil
       @constraints = []
+      self.objective = objective_expression
+    end
+
+    def objective=(objective_expression)
+      @objective_expression = objective_expression.kind_of?(LV) ? 1 * objective_expression : objective_expression
+      @variables.merge(@objective_expression.variables)
     end
 
     def [](*constraints)

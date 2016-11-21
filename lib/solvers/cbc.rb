@@ -28,7 +28,7 @@ class Cbc < Solver
     variables.each do |var|
       var.value = vars_by_name[var.to_s].to_f
     end
-    self.unsuccessful = rows[0].start_with?('Infeasible')
+    self.unsuccessful = rows[0].downcase.include?('infeasible')
     return objective_str.to_f
   end
 end

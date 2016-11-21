@@ -1,9 +1,10 @@
 class Gurobi < Solver
   def solve
-    command = "#{executable} ResultFile=#{@outfile} %s %s #{@filename}"
+    command = "#{executable} ResultFile=#{@outfile} %s %s %s #{@filename}"
     command %= [
       options[:gap] ? "MipGap=#{options[:gap]}":"",
-      options[:node_limit] ? "NodeLimit=#{options[:node_limit]}":""
+      options[:node_limit] ? "NodeLimit=#{options[:node_limit]}":"",
+      ENV['RULP_GUROBI_CMD_ARGS'] ? ENV['RULP_GUROBI_CMD_ARGS'] : ''
     ]
     exec(command)
   end

@@ -185,7 +185,8 @@ module Rulp
       solver.store_results(@variables)
 
       if solver.unsuccessful
-        raise "Solve failed: solution infeasible" if IO.read(solver.outfile).downcase.include?("infeasible")
+        outfile_contents = IO.read(solver.outfile)
+        raise "Solve failed: solution infeasible" if outfile_contents.downcase.include?("infeasible") || outfile_contents.strip.length.zero?
         raise "Solve failed: all units undefined"
       end
 

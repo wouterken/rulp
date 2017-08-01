@@ -7,7 +7,8 @@ class Cbc < Solver
     end
     command %= [
       options[:gap] ? "ratio #{options[:gap]}":"",
-      options[:node_limit] ? "maxN #{options[:node_limit]}":""
+      options[:node_limit] ? "maxN #{options[:node_limit]}":"",
+      options[:time_limit] ? "seconds #{options[:time_limit]}":""
     ]
 
     exec(command)

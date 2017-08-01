@@ -4,6 +4,7 @@ class Gurobi < Solver
     command %= [
       options[:gap] ? "MipGap=#{options[:gap]}":"",
       options[:node_limit] ? "NodeLimit=#{options[:node_limit]}":"",
+      options[:time_limit] ? "TimeLimit=#{options[:time_limit]}":"",
       ENV['RULP_GUROBI_CMD_ARGS'] ? ENV['RULP_GUROBI_CMD_ARGS'] : ''
     ]
     exec(command)

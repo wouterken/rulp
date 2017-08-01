@@ -1,7 +1,10 @@
 class Glpk < Solver
   def solve
     command = "#{executable} --lp #{@filename} %s --cuts --output #{@outfile}"
-    command %= options[:gap] ? "--mipgap #{options[:gap]}" : ""
+    command %= [
+      options[:gap] ? "--mipgap #{options[:gap]}" : "",
+      options[:time_limit] ? "--tmlim #{options[:time_limit]}" : ""
+    ]
     exec(command)
   end
 

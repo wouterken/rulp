@@ -28,6 +28,9 @@ class Scip < Solver
     if options[:gap]
       existing_settings += "\nlimits/gap   = #{options[:gap]}"
     end
+    if options[:time_limit]
+      existing_settings += "\nlimits/time   = #{options[:time_limit]}"
+    end
 
     settings_file = get_settings_filename
     IO.write(settings_file, existing_settings)

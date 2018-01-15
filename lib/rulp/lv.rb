@@ -21,8 +21,12 @@ class LV
     "#{self.name}_#{self.suffix}"
   end
 
+  def self.suffix
+    ENV['RULP_LV_SUFFIX'] || "f"
+  end
+
   def suffix
-    "f"
+    self.class.suffix
   end
 
   def self.definition(name, *args)
@@ -74,12 +78,13 @@ class LV
 end
 
 class BV < LV;
-  def suffix
-    "b"
+  def self.suffix
+    ENV['RULP_BV_SUFFIX'] || "b"
   end
 end
+
 class IV < LV;
-  def suffix
-    "i"
+  def self.suffix
+    ENV['RULP_IV_SUFFIX'] || "i"
   end
 end

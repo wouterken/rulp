@@ -18,17 +18,15 @@ module Kernel
   alias_method :old_method_missing, :method_missing
   def method_missing(value, *args)
     method_name = "#{value}" rescue ""
-    start = method_name[0]
-    if (start <= "Z" && start >= "A")
-      case method_name[-1]
-      when "b"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+    if ("A".."Z").cover?(method_name[0])
+      if method_name.end_with?(BV.suffix)
+        method_name = method_name.chomp(BV.suffix).chomp("_")
         return BV.definition(method_name, args)
-      when "i"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+      elsif method_name.end_with?(IV.suffix)
+        method_name = method_name.chomp(IV.suffix).chomp("_")
         return IV.definition(method_name, args)
-      when "f"
-        method_name = method_name[0..(method_name[-2] == "_" ? -3 : -2)]
+      elsif method_name.end_with?(LV.suffix)
+        method_name = method_name.chomp(LV.suffix).chomp("_")
         return LV.definition(method_name, args)
       end
     end

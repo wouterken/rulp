@@ -28,6 +28,7 @@
     - [Examples.](#examples)
     - [Rulp Executable](#rulp-executable)
     - [A larger example](#a-larger-example)
+    - [MIP Minimization example](#mip-minimization-example)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -503,3 +504,66 @@ selected_purchases = [*0..1000].map(&Purchase_b).select(&:selected?)
  ...
 ```
 
+### MIP Minimization Example 
+
+Here is another example of using array style variables. Let's use the example of making a cup of coffee. Personally, I like my coffee with 2 creams and 1 sugar. There are many types of products that can add cream, or sugar to taste. Each has a different associated cost. As a price sensitive consumer what combination of products will allow me to flavor my coffee as desired with the lowest total cost?
+
+
+```ruby
+  desired = [
+    { ingredient: :cream, amount: 2 },
+    { ingredient: :sugar, amount: 1 },
+  ]
+
+  products = [
+    { name: 'Milk',                cost: 0.50, supplies: { cream: 1 } },
+    { name: 'Baileys_Irish_Cream', cost: 2.99, supplies: { cream: 1, sugar: 1 } },
+    { name: 'Non_Dairy_Creamer',   cost: 0.10, supplies: { cream: 1 } },
+    { name: 'Sugar',               cost: 0.10, supplies: { sugar: 1 } },
+  ]
+
+  variables = products.map do |product|
+    Products_i(product[:name])
+  end
+  # => [ ProductMilk_i, ProductBaileys_Irish_Cream_i, ProductNon_Dairy_Creamer_i, ProductSugar_i ]
+
+  given[
+    variables.map { |i| i >= 0 }
+  ]
+  # given [
+  #   ProductMilk_i >= 0,
+  #   ProductBaileys_Irish_Cream_i >= 0,
+  #   ProductNon_Dairy_Creamer_i >= 0,
+  #   ProductSugar_i >= 0,
+  # ]
+
+  constraints = desired.map do |minimum|
+    ingredient = minimum[:ingredient]
+    desired_amount = minimum[:amount]
+
+    products.map.with_index do |p, i|
+      coefficient = p[:supplies][ingredient] || 0
+      coefficient * variables[i]
+    end.inject(:+) >= desired_amount
+  end
+  # => [
+  #    1 * ProductMilk_i + 1 * ProductBaileys_Irish_Cream_i + 1 * ProductNon_Dairy_Creamer_i + 0 * ProductSugar_i >= 2
+  #    0 * ProductMilk_i + 1 * ProductBaileys_Irish_Cream_i + 0 * ProductNon_Dairy_Creamer_i + 1 * ProductSugar_i >= 1
+  # ]
+
+  objective = products.map.with_index { |p, i| p[:cost] * variables[i] }.inject(:+)
+  # => 0.50 * ProductMilk_i + 2.99 * ProductBaileys_Irish_Cream_i + 0.10 * ProductNon_Dairy_Creamer_i + 0.10 * ProductSugar_i
+
+  problem = Rulp::Min(objective)
+  problem[constraints]
+
+  Rulp::Glpk(problem)
+  # DEBUG -- : Objective: 0.30000000000000004
+  # Products = 0.0
+  # Products = 0.0
+  # Products = 2.0
+  # Products = 1.0
+  
+  variables.map(&:value)
+  # => [ 0, 0, 2, 1 ]
+```

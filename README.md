@@ -139,7 +139,7 @@ Or
 
 	echo '\nexport PATH="$PATH:/usr/local/scipoptsuite-3.1.1/ug-0.7.5/bin"' >> ~/.zshrc
 
-####Coin Cbc:
+#### Coin Cbc:
 
 Navigate to install location
 
@@ -504,7 +504,7 @@ selected_purchases = [*0..1000].map(&Purchase_b).select(&:selected?)
  ...
 ```
 
-### MIP Minimization Example 
+### MIP Minimization Example
 
 Here is another example of using array style variables. Let's use the example of making a cup of coffee. Personally, I like my coffee with 2 creams and 1 sugar. There are many types of products that can add cream, or sugar to taste. Each has a different associated cost. As a price sensitive consumer what combination of products will allow me to flavor my coffee as desired with the lowest total cost?
 
@@ -563,7 +563,7 @@ Here is another example of using array style variables. Let's use the example of
   # Products = 0.0
   # Products = 2.0
   # Products = 1.0
-  
+
   variables.map(&:value)
   # => [ 0, 0, 2, 1 ]
 ```

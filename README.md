@@ -88,7 +88,7 @@ Rulp is inspired by the ruby wrapper for the GLPK toolkit and the python LP libr
 To use Rulp as a complete solver toolkit you will need one of either Glpsol(GLPK), Scip or Coin-Cbc installed. Here are some sample instructions of how you install each of these solvers.
 Be sure to read the license terms for each of these solvers before using them.
 
-####Scip:
+### Scip:
 
 Go to install directory
 
@@ -122,7 +122,7 @@ Or
 
 You should now have scip installed.
 
-#### UG (Scip parallel)
+### UG (Scip parallel)
 
 To run scip using multiple cores you will need to use the UG library for scip.
 This is bundled in the scipoptsuite directory.
@@ -139,7 +139,7 @@ Or
 
 	echo '\nexport PATH="$PATH:/usr/local/scipoptsuite-3.1.1/ug-0.7.5/bin"' >> ~/.zshrc
 
-#### Coin Cbc:
+### Coin Cbc:
 
 Navigate to install location
 
@@ -165,7 +165,7 @@ Or
 
 You should now have coin-Cbc installed.
 
-####GLPK:
+### GLPK:
 Download the latest version of GLPK from http://www.gnu.org/software/glpk/#downloading
 
 From the download directory

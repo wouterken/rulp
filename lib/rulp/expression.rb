@@ -21,15 +21,14 @@ class Expressions
     @expressions.map(&:variable)
   end
 
-  [:==, :<, :<=, :>, :>=].each do |constraint_type|
-    define_method(constraint_type){|value|
+  %i[== < <= > >=].each do |constraint_type|
+    define_method(constraint_type) do |value|
       Constraint.new(self, constraint_type, value)
-    }
+    end
   end
 
   def -@
-    -self.expressions[0]
-    self
+    self.class.new(expressions.map(&:-@))
   end
 
   def -(other)
@@ -38,7 +37,7 @@ class Expressions
   end
 
   def +(other)
-    Expressions.new(self.expressions + Expressions[other].expressions)
+    Expressions.new(expressions + Expressions[other].expressions)
   end
 
   def self.[](value)
@@ -50,7 +49,7 @@ class Expressions
   end
 
   def evaluate
-    self.expressions.map(&:evaluate).inject(:+)
+    expressions.map(&:evaluate).inject(:+)
   end
 end
 
@@ -66,19 +65,19 @@ class Fragment
   end
 
   def +(other)
-    return Expressions.new([self] + Expressions[other].expressions)
+    Expressions.new([self] + Expressions[other].expressions)
   end
 
   def -(other)
     self.+(-other)
   end
 
-  def *(value)
-    Fragment.new(@lv, @operand * value)
+  def *(other)
+    Fragment.new(@lv, @operand * other)
   end
 
   def evaluate
-    if [TrueClass,FalseClass].include? @lv.value.class
+    if [TrueClass, FalseClass].include? @lv.value.class
       @operand * (@lv.value ? 1 : 0)
     else
       @operand * @lv.value
@@ -94,20 +93,18 @@ class Fragment
     @lv
   end
 
-  [:==, :<, :<=, :>, :>=].each do |constraint_type|
-    define_method(constraint_type){|value|
+  %i[== < <= > >=].each do |constraint_type|
+    define_method(constraint_type) do |value|
       Constraint.new(Expressions.new(self), constraint_type, value)
-    }
+    end
   end
 
   def to_s
-    @as_str ||= begin
-      case @operand
-      when -1 then " - #{@lv}"
-      when 1 then " + #{@lv}"
-      when ->(op){ op < 0} then " - #{@operand.abs} #{@lv}"
-      else " + #{@operand} #{@lv}"
-      end
-    end
+    @as_str ||= case @operand
+                when -1 then " - #{@lv}"
+                when 1 then " + #{@lv}"
+                when ->(op) { op < 0 } then " - #{@operand.abs} #{@lv}"
+                else " + #{@operand} #{@lv}"
+                end
   end
 end

@@ -16,6 +16,7 @@
       - [UG (Scip parallel)](#ug-scip-parallel)
       - [Coin Cbc:](#coin-cbc)
       - [GLPK:](#glpk)
+      - [HiGHS:](#highs)
   - [Usage](#usage)
       - [Variables](#variables)
       - [Variable Constraints](#variable-constraints)
@@ -85,7 +86,7 @@ Rulp is inspired by the ruby wrapper for the GLPK toolkit and the python LP libr
 
 
 ## Installation
-To use Rulp as a complete solver toolkit you will need one of either Glpsol(GLPK), Scip or Coin-Cbc installed. Here are some sample instructions of how you install each of these solvers.
+To use Rulp as a complete solver toolkit you will need one of either Glpsol(GLPK), Scip, Coin-Cbc or HiGHS installed. Here are some sample instructions of how you install each of these solvers.
 Be sure to read the license terms for each of these solvers before using them.
 
 ### Scip:
@@ -180,6 +181,9 @@ At this point, you should have GLPK installed. Verify it:
 
 	which glpsol
 	=> /usr/local/bin/glpsol
+
+### HiGHS:
+Install HiGHS following the installation instructions at https://ergo-code.github.io/HiGHS/dev/interfaces/cpp/
 
 ## Usage
 

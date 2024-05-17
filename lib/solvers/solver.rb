@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Solver
   attr_reader :options, :outfile, :filename
   attr_accessor :unsuccessful, :model_status

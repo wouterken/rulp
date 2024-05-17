@@ -13,8 +13,9 @@ class Highs < Solver
 
   def store_results(variables)
     rows = IO.read(@outfile).split("\n")
+    self.model_status = rows[1]
 
-    if rows[1].include?('Infeasible')
+    if model_status.downcase.include?('infeasible')
       self.unsuccessful = true
       return
     end
@@ -24,7 +25,7 @@ class Highs < Solver
 
     vars_by_name = {}
 
-    rows[(columns_idx.to_i + 1)...rows_idx.to_i].each do |row|
+    rows[(columns_idx + 1)...rows_idx].each do |row|
       var_name, var_value = row.strip.split(/\s+/)
       vars_by_name[var_name] = var_value
     end

@@ -26,7 +26,8 @@ class Highs < Solver
     rows = IO.read(@outfile).split("\n")
     self.model_status = rows[1]
 
-    if model_status.downcase.include?('infeasible')
+    if model_status.downcase.include?('infeasible') ||
+       model_status.downcase.include?('time limit reached')
       self.unsuccessful = true
       return
     end

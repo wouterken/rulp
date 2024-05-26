@@ -8,7 +8,7 @@ Rulp::log_level = Logger::UNKNOWN
 Rulp::print_solver_outputs = false
 
 def each_solver
-  [:scip, :cbc, :glpk, :gurobi].each do |solver|
+  [:scip, :cbc, :glpk, :gurobi, :highs].each do |solver|
     LV::clear
     if Rulp::solver_exists?(solver)
       yield(solver)

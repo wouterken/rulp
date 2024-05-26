@@ -1,6 +1,8 @@
+require 'fileutils'
+
 class Solver
   attr_reader :options, :outfile, :filename
-  attr_accessor :unsuccessful
+  attr_accessor :unsuccessful, :model_status
 
   def initialize(filename, options)
     @options = options
@@ -61,3 +63,4 @@ require_relative 'cbc'
 require_relative 'scip'
 require_relative 'glpk'
 require_relative 'gurobi'
+require_relative 'highs'

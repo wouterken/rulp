@@ -18,6 +18,7 @@ GLPK  = "glpsol"
 SCIP  = "scip"
 CBC   = "cbc"
 GUROBI = "gurobi_cl"
+HIGHS = "highs"
 
 module Rulp
   attr_accessor :expressions
@@ -31,12 +32,14 @@ module Rulp
   GUROBI  = ::GUROBI
   SCIP  = ::SCIP
   CBC   = ::CBC
+  HIGHS = ::HIGHS
 
   SOLVERS = {
     GLPK     => Glpk,
     SCIP     => Scip,
     CBC      => Cbc,
     GUROBI   => Gurobi,
+    HIGHS    => Highs
   }
 
 
@@ -54,6 +57,10 @@ module Rulp
 
   def self.Gurobi(lp, opts={})
     lp.solve_with(GUROBI, opts)
+  end
+
+  def self.Highs(lp, opts={})
+    lp.solve_with(HIGHS, opts)
   end
 
   def self.Max(objective_expression)
@@ -185,6 +192,8 @@ module Rulp
       solver.store_results(@variables)
 
       if solver.unsuccessful
+        raise "Solve failed: #{solver.model_status}" if solver.model_status
+
         outfile_contents = IO.read(solver.outfile)
         raise "Solve failed: solution infeasible" if outfile_contents.downcase.include?("infeasible") || outfile_contents.strip.length.zero?
         raise "Solve failed: all units undefined"

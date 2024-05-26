@@ -4,7 +4,7 @@ class Glpk < Solver
     command %= [
       options[:gap] ? "--mipgap #{options[:gap]}" : "",
       options[:time_limit] ? "--tmlim #{options[:time_limit]}" : ""
-    ]
+      ].join(" ")
     exec(command)
   end
 

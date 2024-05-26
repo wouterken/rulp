@@ -40,7 +40,7 @@ class LV
     end
   end
 
-  def * (numeric)
+  def *(numeric)
     self.nocoerce
     Expressions.new([Fragment.new(self, numeric)])
   end
@@ -53,7 +53,7 @@ class LV
     self + (-other)
   end
 
-  def + (expressions)
+  def +(expressions)
     Expressions[self] + Expressions[expressions]
   end
 
